@@ -8,7 +8,7 @@ namespace StockTracker.Data.Service
 
         public double GetCurrentStockPrice(string ticker);
 
-        public double GetStockPriceForDate(string ticker);
+        public double GetStockPriceForDate(string ticker, DateTime date);
 
         public List<string> SearchStocks(string query);
 

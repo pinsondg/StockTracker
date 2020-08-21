@@ -5,6 +5,7 @@ namespace StockTracker.Data.Model
     {
         public Dividend()
         {
+            Count = 1;
         }
 
         public override string GetDisplayName()
@@ -16,7 +17,5 @@ namespace StockTracker.Data.Model
         {
             return false;
         }
-
-
     }
 }

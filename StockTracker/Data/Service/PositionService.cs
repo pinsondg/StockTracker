@@ -34,12 +34,17 @@ namespace StockTracker.Data.Service
 
         public Position MakeTradeOnPosition(Position positon, Trade trade)
         {
-            throw new NotImplementedException();
+            var tradeCount = positon.Trades.Count;
+            trade.TradeOrder = tradeCount;
+            positon.Trades.Add(trade);
+            _dbContext.SaveChanges();
+            return positon;
         }
 
         public void RemovePostion(Position position)
         {
-            throw new NotImplementedException();
+            _dbContext.Positions.Remove(position);
+            _dbContext.SaveChanges();
         }
     }
 }

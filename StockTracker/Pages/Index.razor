@@ -1,23 +1,29 @@
 ﻿@page "/"
 @inject IPositionService PositionService
 
-<div class="page-container">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-8 border-right">
-                <div class="d-flex flex-row align-items-center justify-content-around border-bottom">
+<div class="container-fluid page-container">
+    <div class="row page-container">
+        <div style="height:100%" class="col-sm-8 border-right">
+            <div class="positions-container">
+                <div class="d-flex flex-row align-items-center justify-content-around border-bottom positions-header">
                     <h1>
                         Your Positions
                     </h1>
-                    <button type="button" class="btn btn-primary">Add Position</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPositionModal">Add Position</button>
                 </div>
-                <PositionComponent Position=' new Position() { Ticker = "AAA", CompanyName = "Company1", Trades = new List<Trade> { new Trade { TradeAction = TradeAction.BUY, TradeContractCount = 1, TradePricePerContract = 100, TradeDate = DateTime.Now, Security = new Stock() { } } , new Trade() { TradeAction = TradeAction.SELL, Security = new Option() { ExpirationDate = DateTime.Now.AddDays(5), Strike = 12.50, Type = Option.OptionType.COVERED_CALL }, TradeDate = DateTime.Now, TradeContractCount = 100, TradePricePerContract = 0.23 } } }'/>
+                <div class="positions-content">
+                    @foreach (var position in Positions)
+                    {
+                        <PositionComponent Position="@position" />
+                    }
+                    @*<PositionComponent Position=' new Position() { Ticker = "AAA", CompanyName = "Company1", Trades = new List<Trade> { new Trade { TradeAction = TradeAction.BUY, TradeContractCount = 100, TradePricePerContract = 12, TradeDate = DateTime.Now, Security = new Stock() { } } , new Trade() { TradeAction = TradeAction.SELL, Security = new Option() { ExpirationDate = DateTime.Now.AddDays(5), Strike = 12.50, Type = Option.OptionType.COVERED_CALL }, TradeDate = DateTime.Now, TradeContractCount = 100, TradePricePerContract = 0.23 }, new Trade() { TradePricePerContract = 13.00, TradeContractCount = 90, TradeAction = TradeAction.SELL, Security = new Stock() } } }'/>*@
+                </div>
             </div>
-            <div class="col-sm-4">
-                <h1>
-                    Totals
-                </h1>
-            </div>
+        </div>
+        <div class="col-sm-4">
+            <h1>
+                Totals
+            </h1>
         </div>
     </div>
 </div>

@@ -9,10 +9,24 @@
                     <h6>@trade.Security.GetDisplayName()</h6>
                     <small>@trade.TradeDate.ToShortDateString()</small>
                 </div>
-                <div class="d-flex justify-content-between">
-                    <p>@String.Format("{0:CS} * {1} = {2}", trade.TradePricePerContract, trade.TradeContractCount, trade.TradeContractCount * trade.TradePricePerContract)</p>
-                    <p>Security Status: @trade.Security.SecurityStatus</p>
-                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Price Per Contract</th>
+                            <th scope="col">Contracts</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@String.Format("{0:C2}", trade.TradePricePerContract)</td>
+                            <td>@trade.TradeContractCount</td>
+                            <td>@String.Format("{0:C2}", trade.TradeContractCount * trade.TradePricePerContract)</td>
+                            <td>@trade.Security.SecurityStatus</td>
+                        </tr>
+                    </tbody>
+                </table>
             </li>
             }
         </ul>
@@ -22,4 +36,16 @@
 @code {
     [Parameter]
     public List<Trade> Trades { get; set; }
+
+    private string GetActionOrDividend(Trade trade)
+    {
+        if (trade.Security! is Dividend)
+        {
+            return trade.TradeAction.ToString();
+        }
+        else
+        {
+            return "Div";
+        }
+    }
 }

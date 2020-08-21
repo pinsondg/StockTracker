@@ -15,4 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="..\StockTracker\StockTracker.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="Service\" />
+  </ItemGroup>
 </Project>

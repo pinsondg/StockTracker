@@ -26,6 +26,7 @@ namespace StockTracker.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Ticker")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("PositionId");
@@ -39,14 +40,25 @@ namespace StockTracker.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("AveragePrice")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Count")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<long>("PositionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SecurityStatus")
                         .HasColumnType("TEXT");
 
                     b.HasKey("SecurityId");
+
+                    b.HasIndex("PositionId");
 
                     b.ToTable("Security");
 
@@ -73,6 +85,9 @@ namespace StockTracker.Migrations
 
                     b.Property<DateTime>("TradeDate")
                         .HasColumnType("TEXT");
+
+                    b.Property<long>("TradeOrder")
+                        .HasColumnType("INTEGER");
 
                     b.Property<double>("TradePricePerContract")
                         .HasColumnType("REAL");
@@ -107,6 +122,15 @@ namespace StockTracker.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasDiscriminator().HasValue("Option");
+                });
+
+            modelBuilder.Entity("StockTracker.Data.Model.Security", b =>
+                {
+                    b.HasOne("StockTracker.Data.Model.Position", "Position")
+                        .WithMany("Securities")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("StockTracker.Data.Model.Trade", b =>

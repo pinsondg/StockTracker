@@ -14,7 +14,7 @@ namespace StockTracker.Data.Model
 
         public override bool IsCurrentlyOpen()
         {
-            return false;
+            return Count > 0;
         }
     }
 }

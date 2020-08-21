@@ -9,6 +9,9 @@
     <Folder Include="Data\Service\" />
     <Folder Include="Components\" />
     <Folder Include="Components\Layouts\" />
+    <Folder Include="Data\Adapter\" />
+    <Folder Include="Data\Adapter\Tiingo\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.7" />

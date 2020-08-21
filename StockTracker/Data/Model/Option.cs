@@ -18,7 +18,7 @@ namespace StockTracker.Data.Model
 
         public override bool IsCurrentlyOpen()
         {
-            throw new NotImplementedException();
+            return Count != 0;
         }
 
         public override string GetDisplayName()

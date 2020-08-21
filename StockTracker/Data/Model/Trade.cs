@@ -4,6 +4,7 @@ namespace StockTracker.Data.Model
     public class Trade
     {
         public long TradeId { get; set; }
+        public long TradeOrder { get; set; }
         public DateTime TradeDate { get; set; }
         public TradeAction TradeAction { get; set; }
         public double TradeContractCount { get; set; }
