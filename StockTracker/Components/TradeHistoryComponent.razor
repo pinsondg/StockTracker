@@ -1,0 +1,25 @@
+﻿
+    <div class="card card-body">
+        <ul class="list-group">
+            @foreach (Trade trade in Trades.AsEnumerable().Reverse())
+            {
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <h6 style="color:@(trade.TradeAction == TradeAction.SELL ? "green" : "red")">@trade.TradeAction</h6>
+                    <h6>@trade.Security.GetDisplayName()</h6>
+                    <small>@trade.TradeDate.ToShortDateString()</small>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <p>@String.Format("{0:CS} * {1} = {2}", trade.TradePricePerContract, trade.TradeContractCount, trade.TradeContractCount * trade.TradePricePerContract)</p>
+                    <p>Security Status: @trade.Security.SecurityStatus</p>
+                </div>
+            </li>
+            }
+        </ul>
+    </div>
+
+
+@code {
+    [Parameter]
+    public List<Trade> Trades { get; set; }
+}

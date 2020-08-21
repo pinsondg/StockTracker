@@ -1,7 +1,32 @@
 ﻿@page "/"
+@inject IPositionService PositionService
 
-<h1>Hello, world!</h1>
+<div class="page-container">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8 border-right">
+                <div class="d-flex flex-row align-items-center justify-content-around border-bottom">
+                    <h1>
+                        Your Positions
+                    </h1>
+                    <button type="button" class="btn btn-primary">Add Position</button>
+                </div>
+                <PositionComponent Position=' new Position() { Ticker = "AAA", CompanyName = "Company1", Trades = new List<Trade> { new Trade { TradeAction = TradeAction.BUY, TradeContractCount = 1, TradePricePerContract = 100, TradeDate = DateTime.Now, Security = new Stock() { } } , new Trade() { TradeAction = TradeAction.SELL, Security = new Option() { ExpirationDate = DateTime.Now.AddDays(5), Strike = 12.50, Type = Option.OptionType.COVERED_CALL }, TradeDate = DateTime.Now, TradeContractCount = 100, TradePricePerContract = 0.23 } } }'/>
+            </div>
+            <div class="col-sm-4">
+                <h1>
+                    Totals
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
 
-Welcome to your new app.
+@code {
+    public List<Position> Positions { get; set; }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    protected override async Task OnInitializedAsync()
+    {
+        Positions = await PositionService.GetAllPositionsAsync();
+    }
+}

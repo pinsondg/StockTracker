@@ -1,0 +1,55 @@
+﻿@inject IPositionService PositionService
+
+    <div class="jumbotron position-brick position-relative">
+        <div class="d-flex justify-content-between align-items-center flex-row">
+            <h1 style="margin-bottom: 0">@Position.Ticker - $@GetCurrentStockPrice()</h1>
+            <span class="oi oi-ellipses clickable"></span>
+        </div>
+        <div>
+            <p><span class="oi oi-arrow-thick-top"></span> $6.00 Today</p>
+        </div>
+        <div>
+            <h3>Current Holdings</h3>
+
+        </div>
+        <div class="">
+            <h3>Position Value: $@GetTotalPositionRealizedGain()</h3>
+        </div>
+        <div class="d-flex align-items-center justify-content-between flex-row unselectable">
+            <div class="d-flex align-items-center flex-row clickable" @onclick="@(() => ToggleHistoryOpen())">
+                <span class="oi oi-list mr-2"></span>
+                <h5 style="padding-bottom: 0; margin-bottom: 0">@(HistoryOpen ? "Hide" : "Show") History</h5>
+            </div>
+            <div>
+                <button class="btn btn-outline-success">Make Trade</button>
+            </div>
+        </div>
+        <div class="collapse @(HistoryOpen ? "show" : "") mt-2" id="historyCollapse">
+            <TradeHistoryComponent Trades="@Position.Trades"/>
+        </div>
+    </div>
+
+@code {
+    [Parameter]
+    public Position Position { get; set; }
+
+    public bool HistoryOpen { get; set; } = false;
+
+
+    public double GetTotalPositionRealizedGain()
+    {
+        List<Trade> trades = Position.Trades;
+        return 1;
+       
+    }
+
+    public double GetCurrentStockPrice()
+    {
+        return 100.00;
+    }
+
+    public void ToggleHistoryOpen()
+    {
+        HistoryOpen = !HistoryOpen;
+    }
+}
