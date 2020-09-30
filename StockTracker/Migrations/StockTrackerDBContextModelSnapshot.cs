@@ -71,7 +71,7 @@ namespace StockTracker.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long?>("PositionId")
+                    b.Property<long>("PositionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long?>("SecurityId")
@@ -135,9 +135,11 @@ namespace StockTracker.Migrations
 
             modelBuilder.Entity("StockTracker.Data.Model.Trade", b =>
                 {
-                    b.HasOne("StockTracker.Data.Model.Position", null)
+                    b.HasOne("StockTracker.Data.Model.Position", "Position")
                         .WithMany("Trades")
-                        .HasForeignKey("PositionId");
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("StockTracker.Data.Model.Security", "Security")
                         .WithMany()

@@ -1,35 +1,51 @@
 ﻿
     <div class="card card-body">
-        <ul class="list-group">
-            @foreach (Trade trade in Trades.AsEnumerable().Reverse())
-            {
-            <li class="list-group-item">
-                <div class="d-flex justify-content-between">
-                    <h6 style="color:@(trade.TradeAction == TradeAction.SELL ? "green" : "red")">@trade.TradeAction</h6>
-                    <h6>@trade.Security.GetDisplayName()</h6>
-                    <small>@trade.TradeDate.ToShortDateString()</small>
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Price Per Contract</th>
-                            <th scope="col">Contracts</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>@String.Format("{0:C2}", trade.TradePricePerContract)</td>
-                            <td>@trade.TradeContractCount</td>
-                            <td>@String.Format("{0:C2}", trade.TradeContractCount * trade.TradePricePerContract)</td>
-                            <td>@trade.Security.SecurityStatus</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </li>
-            }
-        </ul>
+        @if (Trades != null)
+        {
+            <ul class="list-group">
+                @foreach (Trade trade in Trades.AsEnumerable().Reverse())
+                {                   
+                <li class="list-group-item">
+                    @if (trade.Security != null)
+                    {
+                        <div class="d-flex justify-content-between">
+                            <h6 style="color:@(trade.TradeAction == TradeAction.SELL ? "green" : "red")">@trade.TradeAction</h6>
+                            <h6>@trade.Security.GetDisplayName()</h6>
+                            <small>@trade.TradeDate.ToShortDateString()</small>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Price Per Contract</th>
+                                    <th scope="col">Contracts</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@String.Format("{0:C2}", trade.TradePricePerContract)</td>
+                                    <td>@trade.TradeContractCount</td>
+                                    <td>@String.Format("{0:C2}", trade.TradeContractCount * trade.TradePricePerContract)</td>
+                                    <td>@trade.Security.SecurityStatus</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    } else
+                    {
+                        <div>
+                            <p>Error loading trade...</p>
+                        </div>
+                    }
+
+                </li>
+                }
+            </ul>
+        }
+        else if (Trades == null || Trades.Count == 0)
+        {
+            <p>No Trade History.</p>
+        }
     </div>
 
 

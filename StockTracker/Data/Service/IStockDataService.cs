@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using StockTracker.Data.Adapter.Tiingo;
 
 namespace StockTracker.Data.Service
 {
     public interface IStockDataService
     {
 
-        public double GetCurrentStockPrice(string ticker);
+        public TiingoCurrentTopOfBookResponse GetCurrentStockData(string ticker);
 
         public double GetStockPriceForDate(string ticker, DateTime date);
 
-        public List<string> SearchStocks(string query);
+        public List<TiingoStockSearchResponse> SearchStocks(string query);
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿window.helperFunctions = {
-    hideModal: function (modalId) {
-        $("#" + modalId).('hide');
+    changeModalState: function (modalId, action) {
+        $("#" + modalId).modal(action);
     }
 }

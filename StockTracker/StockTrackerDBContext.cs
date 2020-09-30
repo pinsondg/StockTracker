@@ -8,6 +8,7 @@ namespace StockTracker
     {
         public DbSet<Position> Positions { get; set; }
         public DbSet<Option> Options { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
         public DbSet<Dividend> Dividends { get; set; }
         public DbSet<Trade> Trades { get; set; }
 

@@ -11,6 +11,9 @@ namespace StockTracker.Data.Model
         public double TradePricePerContract { get; set; }
         public Security Security { get; set; }
 
+        public long PositionId { get; set; }
+        public Position Position { get; set; }
+
         public Trade()
         {
         }

@@ -18,58 +18,74 @@ namespace StockTracker.Data.Model
 
         public Position()
         {
-            Trades = new List<Trade>();
-            Securities = new List<Security>();
         }
 
-        public void GetCurrentHoldings()
+        public List<Security> GetCurrentHoldings()
         {
-
+            if (Securities != null)
+            {
+                return Securities.FindAll(security => security.IsCurrentlyOpen());
+            }
+            return new List<Security>();
         }
 
         public double GetRealizedGainsStock()
         {
-            List<Trade> stockTrades = Trades.FindAll(trade => trade.Security is Stock);
-
-            Stack<Trade> buyStack = new Stack<Trade>();
-            double relizedGains = 0;
-            foreach (var trade in stockTrades)
+            if (Trades != null)
             {
-                if (trade.TradeAction == TradeAction.BUY)
+                List<Trade> stockTrades = Trades.FindAll(trade => trade.Security is Stock);
+
+                Stack<Trade> buyStack = new Stack<Trade>();
+                double relizedGains = 0;
+                foreach (var trade in stockTrades)
                 {
-                    buyStack.Push(trade);
-                }
-                else
-                {
-                    Trade averege = AverageBuyTrades(buyStack);
-                    relizedGains += (trade.TradePricePerContract - averege.TradePricePerContract) * trade.TradeContractCount;
-                    averege.TradeContractCount -= trade.TradeContractCount;
-                    buyStack = new Stack<Trade>();
-                    if (averege.TradeContractCount > 0)
+                    if (trade.TradeAction == TradeAction.BUY)
                     {
-                        buyStack.Push(averege);
+                        buyStack.Push(trade);
+                    }
+                    else
+                    {
+                        Trade averege = AverageBuyTrades(buyStack);
+                        relizedGains += (trade.TradePricePerContract - averege.TradePricePerContract) * trade.TradeContractCount;
+                        averege.TradeContractCount -= trade.TradeContractCount;
+                        buyStack = new Stack<Trade>();
+                        if (averege.TradeContractCount > 0)
+                        {
+                            buyStack.Push(averege);
+                        }
                     }
                 }
+                return relizedGains;
             }
-            return relizedGains;
+            return 0;
         }
 
         public double GetRealizedGainsDividends()
         {
-            List<Trade> dividends = Trades.FindAll(trade => trade.Security is Dividend);
+            if (Trades != null)
+            {
+                List<Trade> dividends = Trades.FindAll(trade => trade.Security is Dividend);
 
-            return dividends.Sum(dividend => dividend.TradeContractCount * dividend.TradePricePerContract);
+                return dividends.Sum(dividend => dividend.TradeContractCount * dividend.TradePricePerContract);
+            } else
+            {
+                return 0;
+            }
         }
 
         public double GetRealizedGainsOptionPremium()
         {
-            List<Trade> buys = Trades.FindAll(trade => trade.TradeAction == TradeAction.BUY && trade.Security is Option);
-            List<Trade> sells = Trades.FindAll(trade => trade.TradeAction == TradeAction.SELL && trade.Security is Option);
+            if (Trades != null)
+            {
+                List<Trade> buys = Trades.FindAll(trade => trade.TradeAction == TradeAction.BUY && trade.Security is Option);
+                List<Trade> sells = Trades.FindAll(trade => trade.TradeAction == TradeAction.SELL && trade.Security is Option);
 
-            double totalSellCost = sells.Sum(sell => sell.TradeContractCount * sell.TradePricePerContract);
-            double totalBuyCost = buys.Sum(buy => buy.TradeContractCount * buy.TradePricePerContract);
+                double totalSellCost = sells.Sum(sell => sell.TradeContractCount * sell.TradePricePerContract);
+                double totalBuyCost = buys.Sum(buy => buy.TradeContractCount * buy.TradePricePerContract);
 
-            return totalSellCost - totalBuyCost;
+                return totalSellCost - totalBuyCost;
+            }
+            return 0;
         }
 
         public double GetTotalRelizedGains()

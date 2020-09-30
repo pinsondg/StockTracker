@@ -31,6 +31,7 @@ namespace StockTracker
         {
             services.AddLiveReload();
             services.AddScoped<IPositionService, PositionService>();
+            services.AddScoped<IStockDataService, StockDataService>();
             services.AddDbContext<StockTrackerDBContext>(options => {
                 options.UseSqlite("Data Source=StockTracker.db");
                 options.EnableDetailedErrors();

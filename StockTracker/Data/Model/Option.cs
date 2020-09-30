@@ -41,5 +41,29 @@ namespace StockTracker.Data.Model
             }
             return String.Format("{0} - {1:C2} - {2}", type, Strike, ExpirationDate.ToShortDateString());
         }
+
+        public bool IsExpired()
+        {
+            return ExpirationDate.CompareTo(DateTime.Now) > 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is Option)
+            {
+                return ((Option)obj).ExpirationDate.ToShortDateString().Equals(this.ExpirationDate.ToShortDateString())
+                    && ((Option)obj).Strike == this.Strike
+                    && ((Option)obj).Position != null
+                    && this.Position != null
+                    && ((Option)obj).Position.PositionId == this.Position.PositionId
+                    && this.Type == ((Option)obj).Type;
+            }
+            return false;
+        }
+
+        public override bool CanHaveNegativeCount()
+        {
+            return true;
+        }
     }
 }

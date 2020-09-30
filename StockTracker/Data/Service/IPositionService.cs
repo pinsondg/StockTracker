@@ -12,11 +12,12 @@ namespace StockTracker.Data.Service
 
         public Position AddPosition(Position position);
 
-        public Position MakeTradeOnPosition(Position positon, Trade trade);
+        public Position MakeTradeOnPosition(long positionId, Trade trade);
 
         public void RemovePostion(Position position);
 
-        public double GetCurrentStockPriceForPosition(Position position);
+        public List<Position> GetAllPositions();
 
+        public double GetPositionCurrentOpenPL(Position position);
     }
 }

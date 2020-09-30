@@ -16,5 +16,15 @@ namespace StockTracker.Data.Model
         {
             return Count > 0;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Stock && ((Stock)obj).PositionId == PositionId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(SecurityId);
+        }
     }
 }

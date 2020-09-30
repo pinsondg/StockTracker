@@ -1,5 +1,8 @@
 ﻿@inject IPositionService PositionService
+@inject IStockDataService StockDataService
 @inject IJSRuntime JSRuntime
+@using Microsoft.Extensions.Logging;
+@inject ILogger<TiingoStockSearchResponse> logger;
 
 <div class="modal fade" id="addPositionModal" tabindex="-1" role="dialog" aria-labelledby="addPositionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -12,15 +15,24 @@
             </div>
             <div class="modal-body">
                 <EditForm Model="@position" OnValidSubmit="@HandleValidSubmit">
-                    <label>
-                        Company Name:
-                        <InputText id="company-name" @bind-Value="position.CompanyName" />
-                    </label>
-                    <label>
-                        Ticker:
-                        <InputText id="ticker" @bind-Value="position.Ticker" />
-                    </label>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    @*<label>
+                            Company Name:
+                            <InputText id="company-name" @bind-Value="position.CompanyName" />
+                        </label>*@
+                    <div class="form-group">
+                        <label>
+                            Search Stock
+                        </label>
+                        <InputText class="form-control" @oninput="GetStockSearchResponse" id="ticker" autocomplete="off" @bind-Value="position.Ticker" />
+                        <div class="list-group">
+                            @for (var i = 0; i < suggestions.Count; i++)
+                            {
+                                var suggestion = suggestions[i];
+                                <button type="button" @onclick="@(e => OnTickerSelected(suggestion))" class="list-group-item list-group-item-action">@(suggestion.name + " (" + suggestion.ticker + ")")</button>
+                            }
+                        </div>
+                    </div>
+                    <button disabled="@(!isValidTickerSelected)" type="submit" class="btn btn-primary">Submit</button>
                 </EditForm>
             </div>
         </div>
@@ -31,10 +43,37 @@
 @code {
     private Position position = new Position();
 
+    private bool isValidTickerSelected = false;
+
+    private List<TiingoStockSearchResponse> suggestions = new List<TiingoStockSearchResponse>();
+
+    [Parameter]
+    public List<Position> Positions { get; set; }
+
+    [Parameter]
+    public Action OnPositionAdded { get; set; }
+
     private void HandleValidSubmit()
     {
-        PositionService.AddPosition(position);
-        JSRuntime.InvokeVoidAsync("helperFunctions.hideModal", "addPositionModal");
+        Positions.Add(PositionService.AddPosition(position));
+        JSRuntime.InvokeVoidAsync("helperFunctions.changeModalState", "addPositionModal", "hide");
+        position = new Position();
+        OnPositionAdded.Invoke();
+    }
+
+    private void GetStockSearchResponse(ChangeEventArgs e)
+    {
+        isValidTickerSelected = false;
+        suggestions = StockDataService.SearchStocks(e.Value.ToString());
+        suggestions.ForEach(s => logger.LogDebug(s.ticker));
         StateHasChanged();
     }
+
+    private void OnTickerSelected(TiingoStockSearchResponse search)
+    {
+        position.CompanyName = search.name;
+        position.Ticker = search.ticker;
+        isValidTickerSelected = true;
+    }
+
 }

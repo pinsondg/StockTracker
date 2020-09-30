@@ -14,9 +14,13 @@
                 <div class="positions-content">
                     @foreach (var position in Positions)
                     {
-                        <PositionComponent Position="@position" />
+                        <PositionComponent Position="@position" OnPositionDeleted="@StateHasChanged"/>
                     }
                     @*<PositionComponent Position=' new Position() { Ticker = "AAA", CompanyName = "Company1", Trades = new List<Trade> { new Trade { TradeAction = TradeAction.BUY, TradeContractCount = 100, TradePricePerContract = 12, TradeDate = DateTime.Now, Security = new Stock() { } } , new Trade() { TradeAction = TradeAction.SELL, Security = new Option() { ExpirationDate = DateTime.Now.AddDays(5), Strike = 12.50, Type = Option.OptionType.COVERED_CALL }, TradeDate = DateTime.Now, TradeContractCount = 100, TradePricePerContract = 0.23 }, new Trade() { TradePricePerContract = 13.00, TradeContractCount = 90, TradeAction = TradeAction.SELL, Security = new Stock() } } }'/>*@
+                    @if (Positions.Count == 0)
+                    {
+                        <h5>No positions added. Click the "Add Position" button to add a positon.</h5>
+                    }
                 </div>
             </div>
         </div>
@@ -27,12 +31,13 @@
         </div>
     </div>
 </div>
+<AddPositionModal Positions="Positions" OnPositionAdded="@StateHasChanged"/>
 
 @code {
     public List<Position> Positions { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        Positions = await PositionService.GetAllPositionsAsync();
+        Positions = PositionService.GetAllPositions();
     }
 }

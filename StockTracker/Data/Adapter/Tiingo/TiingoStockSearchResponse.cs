@@ -1,14 +1,23 @@
 ﻿using System;
+using System.Runtime.Serialization;
+
 namespace StockTracker.Data.Adapter.Tiingo
 {
+    [DataContract]
     public class TiingoStockSearchResponse
     {
-        public string Ticker { get; set; }
-        public string Name { get; set; }
-        public string AssetType { get; set; }
+        [DataMember]
+        public string ticker { get; set; }
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public string assetType { get; set; }
+        [DataMember]
         public bool IsActive { get; set; }
-        public string PermaTicker { get; set; }
-        public string OpenFIGI { get; set; }
+        [DataMember]
+        public string permaTicker { get; set; }
+        [DataMember]
+        public string openFIGI { get; set; }
 
         public TiingoStockSearchResponse()
         {

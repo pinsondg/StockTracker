@@ -10,7 +10,7 @@ namespace StockTracker.Data.Model
 
         public long PositionId { get; set; }
         public Position Position { get; set; }
-        
+
         public Security()
         {
         }
@@ -18,5 +18,10 @@ namespace StockTracker.Data.Model
         public abstract bool IsCurrentlyOpen();
 
         public abstract string GetDisplayName();
+
+        public virtual bool CanHaveNegativeCount()
+        {
+            return false;
+        }
     }
 }
