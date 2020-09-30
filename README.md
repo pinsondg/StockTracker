@@ -12,3 +12,4 @@ This can be done at https://www.tiingo.com. Once your key is obtained, you will 
 * Re-organize position bricks into better layout
 * Add better colors
 * Add totals
+* Dockerize and package together with local DB
