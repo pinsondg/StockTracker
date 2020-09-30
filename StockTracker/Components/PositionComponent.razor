@@ -1,0 +1,122 @@
+﻿@inject IPositionService PositionService
+@inject IStockDataService StockDataService
+@inject IJSRuntime JSRuntime
+@using Microsoft.Extensions.Logging;
+@inject ILoggerFactory LoggerFactory
+
+
+<div class="jumbotron position-brick position-relative">
+    <div class="d-flex justify-content-between align-items-center flex-row">
+        <h1 style="margin-bottom: 0">@Position.CompanyName (@Position.Ticker) - @(String.Format("{0:C2}", CurrentStockPrice))</h1>
+        <div class="dropdown">
+            <button class="btn btn-link" type="button" id="@("position-dropdown-button-" + Position.PositionId)" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="oi oi-ellipses clickable"></span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="@("position-dropdown-button-" + Position.PositionId)">
+                <a class="dropdown-item" @onclick="@DeletePosition">Delete</a>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p style="color: @(GetStockPriceChange() > 0 ? "green" : "red")">
+            @if (GetStockPriceChange() > 0)
+            {
+                <span class="oi oi-arrow-thick-top"></span>
+            }
+            else
+            {
+                <span class="oi oi-arrow-thick-bottom"></span>
+            }          
+            @(String.Format("{0:C2} ({1:P2}) Today", Math.Abs(GetStockPriceChange()), Math.Abs(GetStockPricePercentChange())))
+        </p>
+    </div>
+    <div class="curr-holdings-section">
+        <h3>Current Holdings</h3>
+        @if (Position.GetCurrentHoldings().Count == 0)
+        {
+            <p>No Current Holdings</p>
+        }
+        else
+        {
+            <div class="current-holdings-container">
+                @for (var i = 0; i < Position.GetCurrentHoldings().Count; i++)
+                {
+                    var curHoldings = Position.GetCurrentHoldings();
+                    <CurrentHoldingDisplay Security="curHoldings[i]" />
+
+                }
+            </div>
+        }
+    </div>
+    <div class="">
+        <h3>Realized Gains: @(String.Format("{0:C2}", Position.GetTotalRelizedGains()))</h3>
+        <h3>Open P&L: @String.Format("{0:C2}", PositionService.GetPositionCurrentOpenPL(Position))</h3>
+    </div>
+    <div class="d-flex align-items-center justify-content-between flex-row unselectable">
+        <div class="d-flex align-items-center flex-row clickable" @onclick="@(() => ToggleHistoryOpen())">
+            <span class="oi oi-list mr-2"></span>
+            <h5 style="padding-bottom: 0; margin-bottom: 0">@(HistoryOpen ? "Hide" : "Show") History</h5>
+        </div>
+        <div>
+            <button @onclick="@ShowAddTradeModal" class="btn btn-outline-success"><div class="d-flex justify-content-center align-items-center m-1"><span class="oi oi-plus"></span></div></button>
+        </div>
+    </div>
+    <div class="collapse @(HistoryOpen ? "show" : "") mt-2" id="historyCollapse">
+        <TradeHistoryComponent Trades="@Position.Trades" />
+    </div>
+</div>
+<AddTradeModal Id="@Position.PositionId.ToString()" position="@Position" AfterTradeAdded="@StateHasChanged" InitialSecurity="null" />
+
+@code {
+    [Parameter]
+    public Position Position { get; set; }
+
+    [Parameter]
+    public Action OnPositionDeleted { get; set; }
+
+    public bool HistoryOpen { get; set; } = false;
+
+    private float CurrentStockPrice = -1;
+    private float YesterdayClose = -1;
+
+    protected override void OnInitialized()
+    {
+        var logger = LoggerFactory.CreateLogger<PositionComponent>();
+        try
+        {
+            var stockData = StockDataService.GetCurrentStockData(Position.Ticker);
+            CurrentStockPrice = stockData.tngoLast.GetValueOrDefault(-1);
+            YesterdayClose = stockData.prevClose.GetValueOrDefault(-1);
+        }
+        catch (Exception e)
+        {
+            logger.LogWarning(e.Message);
+        }
+    }
+
+    private void ShowAddTradeModal()
+    {
+        JSRuntime.InvokeVoidAsync("helperFunctions.changeModalState", "addTradeModal-" + Position.PositionId, "show");
+    }
+
+    public void ToggleHistoryOpen()
+    {
+        HistoryOpen = !HistoryOpen;
+    }
+
+    public void DeletePosition()
+    {
+        PositionService.RemovePostion(Position);
+        OnPositionDeleted.Invoke();
+    }
+
+    public float GetStockPriceChange()
+    {
+        return CurrentStockPrice - YesterdayClose;
+    }
+
+    public float GetStockPricePercentChange()
+    {
+        return (YesterdayClose - CurrentStockPrice) / YesterdayClose;
+    }
+}

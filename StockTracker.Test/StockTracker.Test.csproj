@@ -12,4 +12,11 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StockTracker\StockTracker.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Model\" />
+    <Folder Include="Service\" />
+  </ItemGroup>
 </Project>

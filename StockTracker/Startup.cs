@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StockTracker.Data;
+using StockTracker.Data.Service;
+using Westwind.AspNetCore.LiveReload;
 
 namespace StockTracker
 {
@@ -26,14 +29,23 @@ namespace StockTracker
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLiveReload();
+            services.AddScoped<IPositionService, PositionService>();
+            services.AddScoped<IStockDataService, StockDataService>();
+            services.AddDbContext<StockTrackerDBContext>(options => {
+                options.UseSqlite("Data Source=StockTracker.db");
+                options.EnableDetailedErrors();
+            });
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseLiveReload();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
