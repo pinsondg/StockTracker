@@ -13,6 +13,7 @@
                 <span class="oi oi-ellipses clickable"></span>
             </button>
             <div class="dropdown-menu" aria-labelledby="@("position-dropdown-button-" + Position.PositionId)">
+                <a class="dropdown-item" @onclick="@ViewInMarketWatch">View In Market Watch</a>
                 <a class="dropdown-item" @onclick="@DeletePosition">Delete</a>
             </div>
         </div>
@@ -118,5 +119,10 @@
     public float GetStockPricePercentChange()
     {
         return (YesterdayClose - CurrentStockPrice) / YesterdayClose;
+    }
+
+    public void ViewInMarketWatch()
+    {
+        JSRuntime.InvokeVoidAsync("helperFunctions.openInMarketWatch", Position.Ticker);
     }
 }
