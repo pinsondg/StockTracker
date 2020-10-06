@@ -258,6 +258,10 @@ app {
     white-space: nowrap;
 }
 
+.current-holding-container.assignment-risk {
+    border: 2px solid red;
+}
+
 .curr-holdings-section {
     width: 100%;
     overflow: hidden;
