@@ -9,7 +9,6 @@
     <Folder Include="Data\Model\" />
     <Folder Include="Data\Service\" />
     <Folder Include="Components\" />
-    <Folder Include="Components\Layouts\" />
     <Folder Include="Data\Adapter\" />
     <Folder Include="Data\Adapter\Tiingo\" />
     <Folder Include="Migrations\" />

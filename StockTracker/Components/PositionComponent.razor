@@ -15,7 +15,7 @@
                 <div class="dropdown-menu" aria-labelledby="@("position-dropdown-button-" + Position.PositionId)">
                     <a class="dropdown-item" @onclick="@ViewInMarketWatch">View In Market Watch</a>
                     <a class="dropdown-item" @onclick="@(() => IsCollapsed = !IsCollapsed)">@(IsCollapsed ? "Un-collapse" : "Collapse")</a>
-                    <a class="dropdown-item" @onclick="@DeletePosition">Delete</a>
+                    <a class="dropdown-item" @onclick="@ShowDeleteConfirmationModal">Delete</a>
                 </div>
             </div>
         </div>
@@ -70,6 +70,7 @@
         }
     </div>
 <AddTradeModal Id="@Position.PositionId.ToString()" position="@Position" AfterTradeAdded="@StateHasChanged" InitialSecurity="null" />
+<ConfirmationModal Id="@("confirmDeleteModal-" + Position.PositionId)" HeaderText="Delete" BodyText="@("Are you sure you want to delete your " + Position.CompanyName + " position?")" OnConfirm="@DeletePosition" @SubmitButtonText="Delete"/>
 
 @code {
     [Parameter]
@@ -102,6 +103,11 @@
     private void ShowAddTradeModal()
     {
         JSRuntime.InvokeVoidAsync("helperFunctions.changeModalState", "addTradeModal-" + Position.PositionId, "show");
+    }
+
+    private void ShowDeleteConfirmationModal()
+    {
+        JSRuntime.InvokeVoidAsync("helperFunctions.changeModalState", "confirmDeleteModal-" + Position.PositionId, "show");
     }
 
     public void ToggleHistoryOpen()
