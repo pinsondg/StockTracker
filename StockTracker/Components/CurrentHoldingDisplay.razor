@@ -1,0 +1,49 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="@DetermineClass()">
+    <h5>@Security.GetDisplayName()</h5>
+    @if (HasAssignmentRisk())
+    {
+        <h6 style="color:red">Assignment Risk!</h6>
+    }
+    <h6>Contracts: @Security.Count</h6>
+    <h6>Average Cost: @String.Format("{0:C2}", Security.AveragePrice)</h6>
+    <button @onclick="HandleTradeButtonClick" class="btn @(HasAssignmentRisk() ? "btn-outline-danger" : "btn-outline-success")">Trade</button>
+</div>
+<AddTradeModal InitialSecurity="Security" Id="@(Security.SecurityId.ToString() + "-" + Security.PositionId.ToString())" position="Security.Position" AfterTradeAdded="OnTradeAdded" />
+
+@code {
+
+    [Parameter]
+    public Security Security { get; set; }
+
+    [Parameter]
+    public double CurrentStockPrice { get; set; }
+
+    public void HandleTradeButtonClick()
+    {
+        JSRuntime.InvokeVoidAsync("helperFunctions.changeModalState", "addTradeModal-" + Security.SecurityId.ToString() + "-" + Security.PositionId.ToString(), "show");
+    }
+
+    public void OnTradeAdded()
+    {
+        StateHasChanged();
+    }
+
+    public string DetermineClass()
+    {
+        var classes = "current-holding-container";
+        if (HasAssignmentRisk())
+        {
+            classes += " assignment-risk";
+        }
+        return classes;
+    }
+
+    private bool HasAssignmentRisk()
+    {
+        return Security is Option &&
+            ((((Option)Security).Type == Option.OptionType.CASH_SECURED_PUT && ((Option)Security).Strike >= CurrentStockPrice)
+                || (((Option)Security).Type == Option.OptionType.COVERED_CALL && ((Option)Security).Strike <= CurrentStockPrice));
+    }
+}

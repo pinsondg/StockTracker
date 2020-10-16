@@ -70,7 +70,7 @@
         }
     </div>
 <AddTradeModal Id="@Position.PositionId.ToString()" position="@Position" AfterTradeAdded="@StateHasChanged" InitialSecurity="null" />
-<ConfirmationModal Id="@("confirmDeleteModal-" + Position.PositionId)" HeaderText="Delete" BodyText="@("Are you sure you want to delete your " + Position.CompanyName + " position?")" OnConfirm="@DeletePosition" @SubmitButtonText="Delete"/>
+<ConfirmationModal Id="@("confirmDeleteModal-" + Position.PositionId)" HeaderText="Delete" BodyText="@("Are you sure you want to delete your " + Position.CompanyName + " position?")" OnConfirm="@DeletePosition" ConfirmButtonText="Delete"/>
 
 @code {
     [Parameter]
